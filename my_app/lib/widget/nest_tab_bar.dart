@@ -18,7 +18,7 @@ class NestTabBar extends StatefulWidget {
     this.tabController,
     this.pageController,
     required this.tabTitles,
-    this.labelPadding = 8,
+    this.labelPadding = 16,
     required this.textSize,
     required this.selectTextSize,
     this.indicator = const BoxDecoration(),
@@ -35,6 +35,7 @@ class NestTabBarState extends State<NestTabBar> {
     return Container(
       alignment: Alignment.centerLeft,
       child: TabBar(
+        dividerColor: Colors.transparent,
         isScrollable: true,
         indicator: widget.indicator,
         controller: widget.tabController,

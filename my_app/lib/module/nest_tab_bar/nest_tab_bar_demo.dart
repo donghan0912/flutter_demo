@@ -6,15 +6,16 @@ import 'page_view_scroll_utils.dart';
 import '../../widget/custom_tab_indicator.dart';
 import '../../widget/nest_tab_bar.dart';
 
-/// TabBar + PageView + TabBar + TabBarView，这个有bug，第二层TabBar，tab背景色移动比较慢
-class NestTabBarDemo2 extends StatefulWidget {
-  const NestTabBarDemo2({super.key});
+/// TabBar + PageView + TabBar + PageView
+class NestTabBarDemo extends StatefulWidget {
+  const NestTabBarDemo({super.key});
 
   @override
-  State<StatefulWidget> createState() => _NestTabBarDemo2PageState();
+  State<StatefulWidget> createState() => _NestTabBarDemoState();
+
 }
 
-class _NestTabBarDemo2PageState extends State<NestTabBarDemo2>
+class _NestTabBarDemoState extends State<NestTabBarDemo>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   late TabController _tabController;
@@ -45,6 +46,7 @@ class _NestTabBarDemo2PageState extends State<NestTabBarDemo2>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('PageView嵌套滑动测试'),
       ),
       body: Column(
@@ -58,6 +60,7 @@ class _NestTabBarDemo2PageState extends State<NestTabBarDemo2>
             selectTextSize: 17,
             indicator: CustomTabIndicator(width: 15, borderSide: BorderSide(width: 4.0, color: const Color(0xFFFF4A34))),
           ),
+
           Expanded(
             child: PageView(
               controller: _pageController,
@@ -190,8 +193,14 @@ class _HomePageState extends State<HomePage>
                       )),
                   Expanded(
                     child: NotificationListener<ScrollNotification>(
-                      child: TabBarView(
-                        controller: _tabController,
+                      child: PageView(
+                        controller: _pageController,
+                        onPageChanged: (index) {
+                          _tabController?.animateTo(
+                            index,
+                            duration: Duration(milliseconds: 300),
+                          );
+                        },
                         children: pages,
                       ),
                       onNotification: _pageViewScrollUtils?.handleNotification,

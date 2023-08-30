@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/module/test/info_focus_colleges_majors.dart';
 
-import 'module/nest_tabBar/nest_tab_bar_demo.dart';
-import 'module/nest_tabBar/nest_tab_bar_demo2.dart';
+import 'module/nest_tab_bar/nest_tab_bar_demo.dart';
+import 'module/nest_tab_bar/nest_tab_bar_demo2.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        // useMaterial3: true,
+        // 注意：useMaterial3设置为ture，一直发现的bug是TabBar dividerColor: Colors.transparent,
+        useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -57,6 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
             TextButton(onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) =>  NestTabBarDemo2()),);
             }, child: Text('444')),
+            TextButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>  InfoFocusCollegesMajorsPage()),);
+            }, child: Text('测试关注页面')),
 
 
           ],

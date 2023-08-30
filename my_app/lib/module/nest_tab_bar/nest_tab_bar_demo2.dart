@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/module/nest_tabBar/page_view_content.dart';
 
 import '../../widget/custom_circle_tab_indicator.dart';
+import 'page_view_content.dart';
 import 'page_view_scroll_utils.dart';
 import '../../widget/custom_tab_indicator.dart';
 import '../../widget/nest_tab_bar.dart';
 
-/// TabBar + PageView + TabBar + PageView
-class NestTabBarDemo extends StatefulWidget {
-  const NestTabBarDemo({super.key});
+/// TabBar + PageView + TabBar + TabBarView，
+/// 注意：这个有bug，第二层TabBar，tab背景色移动比较慢
+class NestTabBarDemo2 extends StatefulWidget {
+  const NestTabBarDemo2({super.key});
 
   @override
-  State<StatefulWidget> createState() => _NestTabBarDemoState();
-
+  State<StatefulWidget> createState() => _NestTabBarDemo2PageState();
 }
 
-class _NestTabBarDemoState extends State<NestTabBarDemo>
+class _NestTabBarDemo2PageState extends State<NestTabBarDemo2>
     with SingleTickerProviderStateMixin {
   late PageController _pageController;
   late TabController _tabController;
@@ -59,9 +59,6 @@ class _NestTabBarDemoState extends State<NestTabBarDemo>
             selectTextSize: 17,
             indicator: CustomTabIndicator(width: 15, borderSide: BorderSide(width: 4.0, color: const Color(0xFFFF4A34))),
           ),
-
-          // Container(height: 10, color: Colors.red,),
-
           Expanded(
             child: PageView(
               controller: _pageController,
@@ -194,14 +191,8 @@ class _HomePageState extends State<HomePage>
                       )),
                   Expanded(
                     child: NotificationListener<ScrollNotification>(
-                      child: PageView(
-                        controller: _pageController,
-                        onPageChanged: (index) {
-                          _tabController?.animateTo(
-                            index,
-                            duration: Duration(milliseconds: 300),
-                          );
-                        },
+                      child: TabBarView(
+                        controller: _tabController,
                         children: pages,
                       ),
                       onNotification: _pageViewScrollUtils?.handleNotification,
