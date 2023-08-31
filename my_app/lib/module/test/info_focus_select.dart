@@ -41,7 +41,7 @@ class InfoFocusSelectState extends State<InfoFocusSelect> {
         listViewItemBuilders: (isSelected, listViewIndex, index){
           return _getItemWidget(isSelected, listViewIndex, index);
         },
-        onItemClick: (isRepeatedClick, listViewIndex, clickedIndexes){
+        onItemClick: (isRepeatedClick, listViewIndex, clickedIndexes, index){
           clickedIndexes.forEach((element) {
             print('第$listViewIndex个ListView的点击位置$element === 重复点击：$isRepeatedClick');
           });

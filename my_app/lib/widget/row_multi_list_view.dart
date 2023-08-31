@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// ListView item 点击事件回调
 /// [isRepeatedClick] 是否重复点击
 /// [listViewIndex] ListViw索引，从0开始
 /// [clickedIndexes] 每个ListView点击的index，注意：默认初始值为-1；
+/// [index] ListView点击索引
 typedef OnItemClick = Function(
-    bool isRepeatedClick, int listViewIndex, List<int> clickedIndexes);
+    bool isRepeatedClick, int listViewIndex, List<int> clickedIndexes, int index);
+
+/// ListView item 是否可点击
+/// [listViewIndex] ListViw索引，从0开始
+/// [index] ListView点击索引
+typedef ItemClickable = bool Function(int listViewIndex, int index);
 
 /// [isSelected] 是否选中
 /// [listViewIndex] ListViw索引，从0开始
@@ -27,6 +34,9 @@ class RowMultiListView extends StatefulWidget {
   ///   例3个列表：[null, null, null]、[100, null, null]、[100, 100, 120]
   final List<double?>? listViewWidths;
 
+  final List<Color?>? listViewBgColors;
+
+  final ItemClickable? itemClickable;
   /// 点击事件
   final OnItemClick? onItemClick;
 
@@ -36,6 +46,8 @@ class RowMultiListView extends StatefulWidget {
     this.listViewWidths,
     required this.listViewItemCounts,
     required this.listViewItemBuilders,
+    this.listViewBgColors,
+    this.itemClickable,
     this.onItemClick,
   }) : super(key: key) {
     if (listViewWidths != null && (listViewWidths?.length != listViewCount)) {
@@ -79,31 +91,40 @@ class RowMultiListViewState extends State<RowMultiListView> {
     var isLast = listViewIndex == widget.listViewCount - 1;
     var isFixedWidth = widget.listViewWidths?[listViewIndex] != null;
     return (isLast && !isFixedWidth)
-        ? Expanded(child: _getListView(listViewIndex))
-        : SizedBox(
-            width: widget.listViewWidths?[listViewIndex] ?? _listViewWidth,
-            child: _getListView(listViewIndex),
-          );
+        ? Expanded(
+        child: Container(
+            color: _getListViewBg(listViewIndex),
+            child: _getListView(listViewIndex)))
+        : Container(
+      color: _getListViewBg(listViewIndex),
+      width: widget.listViewWidths?[listViewIndex] ?? _listViewWidth,
+      child: _getListView(listViewIndex),
+    );
   }
 
   Widget _getListView(int listViewIndex) => ListView.builder(
-        itemCount: _getItemCount(listViewIndex),
-        itemBuilder: (context, index) {
-          return InkWell(
-              onTap: () {
-                if (widget.onItemClick != null) {
-                  var isRepeatedClick = _clickedIndexes[listViewIndex] == index;
-                  if (!isRepeatedClick) {
-                    resetClickedIndexes(listViewIndex);
-                  }
-                  _clickedIndexes[listViewIndex] = index;
-                  widget.onItemClick!(
-                      isRepeatedClick, listViewIndex, _clickedIndexes);
-                }
-              },
-              child: _getItemBuilder(listViewIndex, index));
-        },
-      );
+    itemCount: _getItemCount(listViewIndex),
+    itemBuilder: (context, index) {
+      return InkWell(
+          onTap: () {
+            if (widget.onItemClick != null) {
+              var clickable = widget.itemClickable != null && widget.itemClickable!(listViewIndex, index);
+              if(!clickable) {
+                return;
+              }
+              var isRepeatedClick = _clickedIndexes[listViewIndex] == index;
+              if (!isRepeatedClick) {
+                _resetClickedIndexes(listViewIndex);
+              }
+              _clickedIndexes[listViewIndex] = index;
+              widget.onItemClick!(
+                  isRepeatedClick, listViewIndex, _clickedIndexes, index);
+
+            }
+          },
+          child: _getItemBuilder(listViewIndex, index));
+    },
+  );
 
   /// 每个ListView的长度
   int _getItemCount(int listViewIndex) {
@@ -137,8 +158,17 @@ class RowMultiListViewState extends State<RowMultiListView> {
     }
   }
 
+  Color? _getListViewBg(int listViewIndex) {
+    var bool = widget.listViewBgColors != null &&
+        listViewIndex < widget.listViewBgColors!.length;
+    if (bool) {
+      return widget.listViewBgColors?[listViewIndex];
+    }
+    return null;
+  }
+
   /// 点击时，重置后续保存的ListView的点击索引
-  void resetClickedIndexes(int listViewIndex) {
+  void _resetClickedIndexes(int listViewIndex) {
     var start = listViewIndex + 1;
     var length = _clickedIndexes.length;
     for (int i = start; i < length; i++) {
