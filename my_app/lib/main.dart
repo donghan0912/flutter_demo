@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/module/test/info_focus_colleges_majors.dart';
+import 'package:my_app/module/test/row_multi_list_view_demo.dart';
 
 import 'module/nest_tab_bar/nest_tab_bar_demo.dart';
 import 'module/nest_tab_bar/nest_tab_bar_demo2.dart';
@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(context, MaterialPageRoute(builder: (context) =>  NestTabBarDemo2()),);
             }, child: Text('444')),
             TextButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) =>  InfoFocusCollegesMajorsPage()),);
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>  RowMultiListViewDemo()),);
             }, child: Text('测试关注页面')),
 
 

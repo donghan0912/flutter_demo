@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 /// [listViewIndex] ListViw索引，从0开始
 /// [clickedIndexes] 每个ListView点击的index，注意：默认初始值为-1；
 /// [index] ListView点击索引
-typedef OnItemClick = Function(
-    bool isRepeatedClick, int listViewIndex, List<int> clickedIndexes, int index);
+typedef OnItemClick = Function(bool isRepeatedClick, int listViewIndex,
+    List<int> clickedIndexes, int index);
 
 /// ListView item 是否可点击
 /// [listViewIndex] ListViw索引，从0开始
@@ -35,8 +35,9 @@ class RowMultiListView extends StatefulWidget {
   final List<double?>? listViewWidths;
 
   final List<Color?>? listViewBgColors;
-
+  /// listView item 是否可点击
   final ItemClickable? itemClickable;
+
   /// 点击事件
   final OnItemClick? onItemClick;
 
@@ -67,7 +68,7 @@ class RowMultiListViewState extends State<RowMultiListView> {
   /// 屏幕宽度
   late double _screenWidth;
 
-  /// 平均宽度
+  /// 默认平均宽度
   double _listViewWidth = 0;
 
   @override
@@ -80,9 +81,11 @@ class RowMultiListViewState extends State<RowMultiListView> {
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _getListViewWidth();
-    return Row(
-      children: List.generate(
-          widget.listViewCount, (index) => _getListViewWidget(index)),
+    return Material(
+      child: Row(
+        children: List.generate(
+            widget.listViewCount, (index) => _getListViewWidget(index)),
+      ),
     );
   }
 
@@ -108,8 +111,9 @@ class RowMultiListViewState extends State<RowMultiListView> {
       return InkWell(
           onTap: () {
             if (widget.onItemClick != null) {
-              var clickable = widget.itemClickable != null && widget.itemClickable!(listViewIndex, index);
-              if(!clickable) {
+              var clickable = widget.itemClickable == null ||
+                  widget.itemClickable!(listViewIndex, index);
+              if (!clickable) {
                 return;
               }
               var isRepeatedClick = _clickedIndexes[listViewIndex] == index;
@@ -119,7 +123,6 @@ class RowMultiListViewState extends State<RowMultiListView> {
               _clickedIndexes[listViewIndex] = index;
               widget.onItemClick!(
                   isRepeatedClick, listViewIndex, _clickedIndexes, index);
-
             }
           },
           child: _getItemBuilder(listViewIndex, index));
