@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/widget/common_app_bar.dart';
 import 'package:my_app/widget/row_multi_list_view.dart';
 
 /// 超学考研资讯 ‘添加关注专业’弹框
@@ -33,18 +34,19 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
   void initState() {
     super.initState();
 
-    for(int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
       subjectList1.add('第1列第$i条');
     }
     listViewsItemCount = [subjectList1.length];
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 44 * 9,
-      child: RowMultiListView(
+    return Scaffold(
+      appBar: const CommonAppBar(
+        title: '水平多列选择器',
+      ),
+      body: RowMultiListView(
         listViewCount: 3,
         listViewWidths: const [100, 100, null],
         listViewItemCounts: listViewsItemCount,
@@ -71,7 +73,7 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
                 .then((value) {
               subjectList2.clear();
               unableClickIndexes.clear();
-              var subject1 =  '学术硕士';
+              var subject1 = '学术硕士';
               var subject2 = '专业硕士';
               var list1 = value[0];
               var list2 = value[1];
@@ -90,13 +92,14 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
               }
             }).whenComplete(() {
               setState(() {
-                listViewsItemCount = [subjectList1.length, subjectList2.length];
+                listViewsItemCount = [
+                  subjectList1.length,
+                  subjectList2.length
+                ];
               });
             });
           } else if (listViewIndex == 1) {
-            var pItem = subjectList2[index];
-            getGraduateSubjects(index)
-                .then((value) {
+            getGraduateSubjects(index).then((value) {
               setState(() {
                 subjectList3 = value;
                 listViewsItemCount = [
@@ -131,8 +134,7 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
         } else {
           tempList = subjectList1;
         }
-        widget.resultMap!['name'] = tempList[element] ?? '';
-        // widget.resultMap!['code'] = tempList[element].code ?? '';
+        widget.resultMap!['name'] = tempList[element];
         break;
       }
     }
@@ -160,7 +162,7 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
             const SizedBox(
               width: 8,
             ),
-            Text(subjectList1[index] ?? '',
+            Text(subjectList1[index],
                 style: const TextStyle(color: Color(0xFFFFFFFF), fontSize: 14)),
           ],
         ),
@@ -172,8 +174,8 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
         color: isTitle
             ? const Color(0x0A407BFF)
             : isSelected
-            ? const Color(0x334DA7FF)
-            : const Color(0x1A407BFF),
+                ? const Color(0x334DA7FF)
+                : const Color(0x1A407BFF),
         child: Row(
           children: [
             Visibility(
@@ -190,7 +192,7 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
               width: 8,
             ),
             Expanded(
-                child: Text(subjectList2[index] ?? '',
+                child: Text(subjectList2[index],
                     style: TextStyle(
                         color: isTitle ? const Color(0xFF00DDFF) : Colors.white,
                         fontSize: 14))),
@@ -217,9 +219,9 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
               width: 8,
             ),
             Expanded(
-                child: Text(subjectList3[index] ?? '',
-                    style:
-                    const TextStyle(color: Color(0xFFFFFFFF), fontSize: 14))),
+                child: Text(subjectList3[index],
+                    style: const TextStyle(
+                        color: Color(0xFFFFFFFF), fontSize: 14))),
           ],
         ),
       );
@@ -229,21 +231,21 @@ class RowMultiListViewDemoState extends State<RowMultiListViewDemo> {
 
   /// 学硕
   Future<List<String>> getGraduateMasterSubjects(int pIndex) {
-    return Future((){
+    return Future(() {
       return List.generate(5, (index) => '第$pIndex行 学硕$index');
     });
   }
 
   /// 专硕
   Future<List<String>> getGraduateSpeSubjects(int pIndex) {
-    return Future((){
+    return Future(() {
       return List.generate(7, (index) => '第$pIndex行 专硕$index');
     });
   }
 
   /// 获取具体学科
   Future<List<String>> getGraduateSubjects(int pIndex) {
-    return Future((){
+    return Future(() {
       return List.generate(9, (index) => '第$pIndex行 学科$index');
     });
   }

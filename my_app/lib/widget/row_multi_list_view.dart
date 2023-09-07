@@ -81,11 +81,9 @@ class RowMultiListViewState extends State<RowMultiListView> {
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _getListViewWidth();
-    return Material(
-      child: Row(
-        children: List.generate(
-            widget.listViewCount, (index) => _getListViewWidget(index)),
-      ),
+    return Row(
+      children: List.generate(
+          widget.listViewCount, (index) => _getListViewWidget(index)),
     );
   }
 
